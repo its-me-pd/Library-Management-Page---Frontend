@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Library Management System</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+        }
+
+        header {
+            background-color: rgb(35, 116, 166);
+            color: #fff;
+            padding: 20px;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        main {
+            margin: 20px;
+        }
+
+        section {
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        #pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #book-count {
+            margin-top: 20px;
+        }
+
+        #book-count p {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        #book-count li {
+            list-style: none;
+            margin-bottom: 5px;
+        }
+        button{
+            background-color: rgb(35, 116, 166);
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+	<header>
+		<h1>Library Management System</h1>
+	</header>
+	<main>
+		<section>
+			<h2>Books</h2>
+			<div>
+				<label for="search">Search by:</label>
+				<select id="search">
+					<option value="title">Title</option>
+					<option value="author">Author</option>
+					<option value="subject">Subject</option>
+					<option value="publish_date">Publish Date</option>
+				</select>
+				<input type="text" id="search-input">
+				<button id="search-button">Search</button>
+			</div>
+			<table>
+				<thead>
+					<tr>
+						<th>Title</th>
+						<th>Author</th>
+						<th>Subject</th>
+						<th>Publish Date</th>
+					</tr>
+				</thead>
+				<tbody id="book-list">
+				</tbody>
+			</table>
+			<div id="pagination">
+				<button id="prev-page">Previous</button>
+				<button id="next-page">Next </button>
+			</div>
+		</section>
+	</main>
+	<script>
+       const books = [
+            {title: 'To Kill a Mockingbird',author: 'Harper Lee',subject: 'Fiction',publish_date: 'July 11, 1960'},
+            {title: '1984',author: 'George Orwell',subject: 'Fiction',publish_date: 'June 8, 1949'},
+            {title: 'The Catcher in the Rye',author: 'J.D. Salinger',subject: 'Fiction',publish_date: 'July 16, 1951'},
+            {title: 'The Great Gatsby',author: 'F. Scott Fitzgerald',subject: 'Fiction',publish_date: 'April 10, 1925'},
+            {title: 'Pride and Prejudice',author: 'Jane Austen',subject: 'Fiction',publish_date: 'January 28, 1813'},
+            {title: 'Animal Farm',author: 'George Orwell',subject: 'Fiction',publish_date: 'August 17, 1945'},
+            {title: 'The Lord of the Rings',author: 'J.R.R. Tolkien',subject: 'Fiction',publish_date: 'July 29, 1954'},
+            {title: 'The Hobbit',author: 'J.R.R. Tolkien',subject: 'Fiction',publish_date: 'September 21, 1937'},
+            {title: 'Harry Potter and the Philosopher\'s Stone',author: 'J.K. Rowling',subject: 'Fiction',publish_date: 'June 26, 1997'},
+            {title: 'The Da Vinci Code',author: 'Dan Brown',subject: 'Fiction',publish_date: 'March 18, 2003'},
+            {title: 'The Name of the Wind',author: 'Patrick Rothfuss',subject: 'Fantasy',publish_date: 'March 27, 2007'},
+            {title: 'The Wise Man\'s Fear',author: 'Patrick Rothfuss',subject: 'Fantasy',publish_date: 'March 1, 2011'},
+            {title: 'The Final Empire',author: 'Brandon Sanderson',subject: 'Fantasy',publish_date: 'July 25, 2006'},
+            {title: 'The Way of Kings',author: 'Brandon Sanderson',subject: 'Fantasy',publish_date: 'August 31, 2010'},
+            {title: 'The Eye of the World',author: 'Robert Jordan',subject: 'Fantasy',publish_date: 'January 15, 1990'},
+            {title: 'Assassin\'s Apprentice',author: 'Robin Hobb',subject: 'Fantasy',publish_date: 'April 1995'},
+            {title: 'The Blade Itself',author: 'Joe Abercrombie',subject: 'Fantasy',publish_date: 'May 4, 2006'},
+            {title: 'To the Lighthouse',author: 'Virginia Woolf',subject: 'Novel',publish_date: 'May 5, 1927'},
+            {title: 'Brave New World',author: 'Aldous Huxley',subject: 'Novel',publish_date: '1932'},
+            {title: 'One Hundred Years of Solitude',author: 'Gabriel Garcia Marquez',subject: 'Novel',publish_date: 'May 30, 1967'},
+            {title: 'Invisible Man',author: 'Ralph Ellison',subject: 'Novel',publish_date: 'April 14, 1952'},
+            {title: 'The Handmaid\'s Tale',author: 'Margaret Atwood',subject: 'Novel',publish_date: '1985'},
+            {title: 'Beloved',author: 'Toni Morrison',subject: 'Novel',publish_date: 'September 2, 1987'},
+            {title: 'Dune',author: 'Frank Herbert',subject: 'Science Fiction',publish_date: 'August 1, 1965'},
+            {title: 'Ender\'s Game',author: 'Orson Scott Card',subject: 'Science Fiction',publish_date: 'August 15, 1985'},
+            {title: 'The Hitchhiker\'s Guide to the Galaxy',author: 'Douglas Adams',subject: 'Science Fiction',publish_date: '1979'},
+            {title: 'Brave New World',author: 'Aldous Huxley',subject: 'Science Fiction',publish_date: '1932'},
+            {title: 'Fahrenheit 451',author: 'Ray Bradbury',subject: 'Science Fiction',publish_date: 'October 19, 1953'},
+            {title: 'The War of the Worlds',author: 'H.G. Wells',subject: 'Science Fiction',publish_date: '1898'},
+            {title: 'The Time Machine',author: 'H.G. Wells',subject: 'Science Fiction',publish_date: '1895'},
+            {title: 'Snow Crash',author: 'Neal Stephenson',subject: 'Science Fiction',publish_date: 'June 1, 1992'},
+            {title: 'Altered Carbon',author: 'Richard K. Morgan',subject: 'Science Fiction',publish_date: '2002'},
+            {title: 'Hyperion',author: 'Dan Simmons',subject: 'Science Fiction',publish_date: 'February 28, 1989'},
+            {title: 'The Name of the Rose',author: 'Umberto Eco',subject: 'Historical Fiction',publish_date: '1980'},
+            {title: 'Wolf Hall',author: 'Hilary Mantel',subject: 'Historical Fiction',publish_date: '2009'},
+            {title: 'Gone with the Wind',author: 'Margaret Mitchell',subject: 'Historical Fiction',publish_date: 'June 30, 1936'},
+            {title: 'The Pillars of the Earth',author: 'Ken Follett',subject: 'Historical Fiction',publish_date: '1989'},
+            {title: 'Shōgun',author: 'James Clavell',subject: 'Historical Fiction',publish_date: '1975'},
+            {title: 'The Three Musketeers',author: 'Alexandre Dumas',subject: 'Historical Fiction',publish_date: '1844'},
+            {title: 'The Red Tent',author: 'Anita Diamant',subject: 'Historical Fiction',publish_date: '1997'},
+            {title: 'The Agony and the Ecstasy',author: 'Irving Stone',subject: 'Historical Fiction',publish_date: '1961'},
+            {title: 'The Last Kingdom',author: 'Bernard Cornwell',subject: 'Historical Fiction',publish_date: '2004'},
+            {title: 'The Book Thief',author: 'Markus Zusak',subject: 'Historical Fiction',publish_date: '2005'}
+        ];
+
+        const resultsPerPage = 10;
+        let currentPage = 1;
+        let filteredBooks = [...books];
+
+        function displayBooks(books) {
+        const bookList = document.getElementById('book-list');
+        bookList.innerHTML = '';
+
+        const startIndex = (currentPage - 1) * resultsPerPage;
+        const endIndex = startIndex + resultsPerPage;
+        const displayedBooks = books.slice(startIndex, endIndex);
+
+        for (let i = 0; i < displayedBooks.length; i++) {
+            const book = displayedBooks[i];
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${book.title}</td>
+                <td>${book.author}</td>
+                <td>${book.subject}</td>
+                <td>${book.publish_date}</td>
+            `;
+            bookList.appendChild(row);
+        }
+        }
+
+        function handleSearch() {
+        const searchSelect = document.getElementById('search');
+        const searchValue = document.getElementById('search-input').value;
+
+        if (searchValue) {
+            const searchField = searchSelect.value;
+            filteredBooks = books.filter(book => book[searchField].toLowerCase().includes(searchValue.toLowerCase()));
+        } else {
+            filteredBooks = [...books];
+        }
+
+        currentPage = 1;
+        displayBooks(filteredBooks);
+        updateBookCount(filteredBooks);
+        }
+
+        function handlePrevPage() {
+        if (currentPage > 1) {
+        currentPage--;
+        displayBooks(filteredBooks);
+        }
+        }
+
+        function handleNextPage() {
+        const maxPage = Math.ceil(filteredBooks.length / resultsPerPage);
+        if (currentPage < maxPage) {
+        currentPage++;
+        displayBooks(filteredBooks);
+        }
+        }
+
+        document.getElementById('search-button').addEventListener('click', handleSearch);
+        document.getElementById('search-input').addEventListener('keydown', event => {
+        if (event.keyCode === 13) {
+        handleSearch();
+        }
+        });
+        document.getElementById('prev-page').addEventListener('click', handlePrevPage);
+        document.getElementById('next-page').addEventListener('click', handleNextPage);
+
+        displayBooks(filteredBooks);
+    </script>
+</body>
+</html>
